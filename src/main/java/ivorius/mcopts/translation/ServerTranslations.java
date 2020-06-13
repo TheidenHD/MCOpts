@@ -8,8 +8,8 @@ package ivorius.mcopts.translation;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -23,19 +23,19 @@ public abstract class ServerTranslations
 {
 
     @Nonnull
-    public static TextComponentTranslation join(Object... components)
+    public static TranslationTextComponent join(Object... components)
     {
         return join(", ", components);
     }
 
     @Nonnull
-    public static TextComponentTranslation join(String join, Object... components)
+    public static TranslationTextComponent join(String join, Object... components)
     {
-        return new TextComponentTranslation(StringUtils.repeat("%s", join, components.length), components);
+        return new TranslationTextComponent(StringUtils.repeat("%s", join, components.length), components);
     }
 
     @Nonnull
-    public static TextComponentTranslation join(List<?> components)
+    public static TranslationTextComponent join(List<?> components)
     {
         return join(components.toArray());
     }
@@ -61,17 +61,17 @@ public abstract class ServerTranslations
     public ITextComponent format(String key, Object... params)
     {
         if (translateServerSide())
-            return new TextComponentString(Translations.format(key, convertParams(params)));
+            return new StringTextComponent(Translations.format(key, convertParams(params)));
         else
-            return new TextComponentTranslation(key, params);
+            return new TranslationTextComponent(key, params);
     }
 
     public ITextComponent get(String key)
     {
         if (translateServerSide())
-            return new TextComponentString(Translations.get(key));
+            return new StringTextComponent(Translations.get(key));
         else
-            return new TextComponentTranslation(key);
+            return new TranslationTextComponent(key);
     }
 
     public String usage(String key)
@@ -90,10 +90,10 @@ public abstract class ServerTranslations
 
             for (int i = 0; i < array.length; i++)
             {
-                if (params[i] instanceof TextComponentTranslation)
-                    array[i] = Translations.format(((TextComponentTranslation) params[i]).getKey(), this.convertParams(((TextComponentTranslation) params[i]).getFormatArgs()));
+                if (params[i] instanceof TranslationTextComponent)
+                    array[i] = Translations.format(((TranslationTextComponent) params[i]).getKey(), this.convertParams(((TranslationTextComponent) params[i]).getFormatArgs()));
                 else if (params[i] instanceof ITextComponent)
-                    array[i] = ((ITextComponent) params[i]).getUnformattedText();
+                    array[i] = ((ITextComponent) params[i]).getUnformattedComponentText();
                 else
                     array[i] = params[i];
             }
